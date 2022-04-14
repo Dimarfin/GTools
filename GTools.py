@@ -62,7 +62,7 @@ def Convert(InFile,OutFile):
 
 
 def PlotTopView(InFile):
-    """Description
+    """Gives a top viev plot of a structure coded in the G-code file
     """
     def NewXY(line,x,y,CoorSysType):
         xnew=x
