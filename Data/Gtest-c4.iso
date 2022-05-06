@@ -3,35 +3,30 @@
 (Date : 06.05.2022)
 
 (Program-Start)
-G90 G94
+G90 G94 
 
 (Beginning Group 01_Level 01_Wire01)
-G0 Z30
+G0 Z30 
 M99
 M90 P4 D4
 M95 P1
 
 
-$x=-10
-$i=0
-$sn=-1
-$x2=5
-$dyWire=4
-F5
+F5 
 (Wire 0)
-G0 Xx2 Ysn*i*dyWire
-G0 Z0
+G0 X5 Y0 
+G0 Z0 
 M97
 M30 P9
-G1 Xx+dyWire Ysn*i*dyWire
-X-6 Y-5
-X0 Y0
+G1 X-6 Y0 
+X-6 Y-5 
+X0 Y0 
 M96
 M30 P6
-G0 Z1
+G0 Z1 
 
 
 (Program-End)
-G0 Z30
-G0 X0 Y0
+G0 Z30 
+G0 X0 Y0 
 M2

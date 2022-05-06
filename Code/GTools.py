@@ -62,7 +62,9 @@ def Convert(InFile,OutFile):
 
 
 def PlotTopView(InFile):
-    """Gives a top viev plot of a structure coded in the G-code file
+    """Gives a top view plot of a structure coded in the G-code file
+    Color can be specified at any place of the g-code file as '(color=x)' 
+    where x is one letter color code e.g r, b, g, y ...
     """
     def NewXY(line,x,y,CoorSysType):
         xnew=x
@@ -112,9 +114,10 @@ def PlotTopView(InFile):
             CoorSysType='abs'    
         if line[0:3]=="G91":
             CoorSysType='rel'
-        if line[0:5]=='(color':
+        if line[0:6]=='(color':
             cells = line.split('=')
-            color=cells[1]
+            color=cells[1][0]
+            #print(color)
         if (line[0:2]=='G0')|(line[0:2]=='G1')|(line[0]=='X')|(line[0]=='Y'):
             xnew,ynew = NewXY(line,x,y,CoorSysType)        
             #print xnew,ynew            
@@ -129,18 +132,22 @@ def PlotTopView(InFile):
     fin.close()
 
 def MoveList(InList,dx,dy,dz):
-    """	This function moves all parts coded in a G-code contained in a python list (with name 'InList') by 'dx' , 'dy' , 'dz' and returnes the result in a python list with the name 'OutList'
+    """	This function takes a python list containing G-code 
+    (with name 'InList'), moves all parts by 'dx' , 'dy' , 'dz' 
+    and returnes the result in a python list
     """
     OutList=[]
-    rel_flag=0
+    
+    CoorSysType='abs'
     for line in InList:
         if len(line)>=3:
             if line[0:3]=='G90':
-                rel_flag=0
+                CoorSysType='abs'
             if line[0:3]=='G91':
-                rel_flag=1
+                CoorSysType='rel'
                 
-        if ((line[0]=='F')|(line[0]=='G')|(line[0]=='X')|(line[0]=='Y')|(line[0]=='Z'))&(rel_flag==0):
+        if ((line[0]=='F')|(line[0]=='G')|(line[0]=='X')|(line[0]=='Y')|(line[0]=='Z'))\
+            &(CoorSysType=='abs'):
             line=line.strip()            
             cells = line.split(' ')
             line=''
@@ -170,6 +177,12 @@ def Move(InFile,OutFile,dx,dy,dz):
     """
     fin = open(InFile,"r")
     fout = open(OutFile,"w")
+    
+    In_list = InFile.readlines()
+    Out_list = MoveList(In_list,dx,dy,dz)
+    
+    OutFile.write(Out_list)
+    '''
     CoorSysType='abs'
     
     for line in fin:
@@ -197,6 +210,7 @@ def Move(InFile,OutFile,dx,dy,dz):
             fout.write(line)
         else:
             fout.write(line)
-            
+        '''    
     fin.close()
     fout.close()
+    
