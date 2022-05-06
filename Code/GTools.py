@@ -127,6 +127,41 @@ def PlotTopView(InFile):
                
                  
     fin.close()
+
+def MoveList(InList,dx,dy,dz):
+    """	This function moves all parts coded in a G-code contained in a python list (with name 'InList') by 'dx' , 'dy' , 'dz' and returnes the result in a python list with the name 'OutList'
+    """
+    OutList=[]
+    rel_flag=0
+    for line in InList:
+        if len(line)>=3:
+            if line[0:3]=='G90':
+                rel_flag=0
+            if line[0:3]=='G91':
+                rel_flag=1
+                
+        if ((line[0]=='F')|(line[0]=='G')|(line[0]=='X')|(line[0]=='Y')|(line[0]=='Z'))&(rel_flag==0):
+            line=line.strip()            
+            cells = line.split(' ')
+            line=''
+            for cell in cells:
+                cell=cell.strip()
+                if cell[0]=='X':
+                    cell=cell[0]+str(eval(cell[1::])+dx)
+                if cell[0]=='Y':
+                    cell=cell[0]+str(eval(cell[1::])+dy)
+                if cell[0]=='Z':
+                    cell=cell[0]+str(eval(cell[1::])+dz)
+                if cell[0]=='I':
+                    cell=cell[0]+str(eval(cell[1::])+dx)
+                if cell[0]=='J':
+                    cell=cell[0]+str(eval(cell[1::])+dy)
+                line=line+cell+' '
+            line=line+'\n' 
+            OutList=OutList+[line]
+        else:
+            OutList=OutList+[line]
+    return OutList      
     
 def Move(InFile,OutFile,dx,dy,dz):
     """This function moves all parts coded in a G-code file 
